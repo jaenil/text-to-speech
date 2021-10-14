@@ -1,81 +1,32 @@
-import React , {useState,useEffect} from 'react' ;
-import './App.css';
+import React,{useEffect ,useState} from 'react'
 
+const SpeechRecognition =  window.webkitSpeechRecognition || window.SpeechRecognition ;
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition ;
-const mic = new SpeechRecognition() ;
+const App = () => {
+  const [start, setStart] = useState(false) ;
+  
+  /*useEffect(() => {
+    const recognition = new SpeechRecognition();
+    recognition.onresult = console.log ;
+    recognition.start() ;
+  }, []) */
 
-mic.continous = true ;
-mic.interimResults = true ;
-mic.lang = 'en-US' ;
-
-function App() {
-  const [isListening ,setIsListening] = useState(false)
-  const [note, setNote] = useState(null) ;
-  const [savedNotes, setSavedNotes] = useState([]);
-
-  useEffect(() => {
-    handleListen() 
-  }, [isListening])
-
-  const handleListen = () => {
-    if(isListening) {
-      mic.start()
-      mic.onend = () => {
-        console.log('continue ...')  
-        mic.start ()
-      }
-    }else {
-      mic.stop()
-      mic.onend = () => {
-        console.log('Stopped mic on click ')
-      }
-    }
-    mic.onstart = () => {
-      console.log('Mic is on')
-    }
-
-    mic.onresult = event =>{
-      const transcript = Array.from(event.results)
-        .map(result => result[0])
-        .map(results => results.transcript)
-        .join('')
-      console.log(transcript)
-      setNote(transcript)
-      mic.onerror = event => {
-        console.log(event.error)
-      }
-    }
-  }
-
-  const handleSaveNote = () => {
-    setSavedNotes([...savedNotes , note])
-    setNote('')
+  const toggleFunction = (state) => {
+    setStart(!state) ;
   }
   return (
     <>
-      <h1>Voice Notes </h1>
-      <div className='container'>
-        <div className='box'>
-          <h2>Current Note</h2>
-          {isListening ? <span>	🎙️</span> : <span>🚫</span>}
-          <button onClick= {handleSaveNote} disabled={!note}>Save Note</button>
-          <button onClick={() => setIsListening(prevState => !prevState)}>
-            Start/Stop
-          </button>
-          <p>
-            {note}
-          </p>
-        </div>
-        <div className='box'>
-          <h2>Notes</h2>
-          {savedNotes.map(n => (
-            <p key={n}>{n}</p>
-          ))}
-        </div>
-      </div>
+      <h1>Speech to Text application</h1>
+      <hr></hr>
+      <div>
+        <button>Start/Stop</button>
+        <p>results here</p>
+
+      </div> 
+      <hr></hr>
+      <p>Built by Jaenil Parekh</p>
     </>
-  );
+  )
 }
 
-export default App;
+export default App
